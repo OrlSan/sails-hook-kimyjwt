@@ -1,0 +1,48 @@
+{
+  "name": "sails-hook-kimyjwt",
+  "version": "0.1.0",
+  "description": "JSON Web Tokens for Sails, made for humans.",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/OrlSan/sails-hook-kimyjwt"
+  },
+  "keywords": [
+    "jwt",
+    "authentication",
+    "sails",
+    "hook",
+    "token",
+    "auth"
+  ],
+  "author": "Orlando Sánchez <orlando.sanchez@jaque.me>",
+  "contributors": [
+    {
+      "name": "Orlando Sánchez",
+      "email": "orlando.sanchez@jaque.me",
+      "url": "http://orlsan.com"
+    }, {
+      "name": "Jorge Santiago Álvarez Cuadros",
+      "email": "sanjorgek@ciencias.unam.mx",
+      "url": "http://sanjorgek.com"
+    }
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/OrlSan/sails-hook-kimyjwt/issues"
+  },
+  "sails": {
+    "isHook": true,
+    "hookname": "kimyjwt"
+  },
+  "dependencies": {
+    "jsonwebtoken": "^7.1.9"
+  },
+  "devDependencies": {
+    "mocha": "^3.0.2",
+    "sails": "^0.12.4"
+  }
+}
