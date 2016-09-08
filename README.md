@@ -1,5 +1,8 @@
 # KimyJWT
 
+[![NPM Version][npm-image]][npm-url]
+[![NPM Downloads][downloads-image]][downloads-url]
+
 [Sails.js](http://sailsjs.org) hook for JWT-based authentication, for humans.
 
 If you're looking for using [JSON Web Tokens](https://jwt.io/) on your Sails
@@ -42,3 +45,9 @@ All PR and Issues are welcome. You can get in touch with
 # About
 
 (C) 2016, Orlando Sánchez & Jorge Santiago Álvarez, Grupo Jaque.
+
+
+[npm-image]: https://img.shields.io/npm/v/sails-hook-kimyjwt.svg
+[npm-url]: https://npmjs.org/package/sails-hook-kimyjwt
+[downloads-image]: https://img.shields.io/npm/dm/sails-hook-kimyjwt.svg
+[downloads-url]: https://npmjs.org/package/sails-hook-kimyjwt
