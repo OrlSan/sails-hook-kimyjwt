@@ -54,6 +54,14 @@ function verify(model, fields) {
     }
 
     var decoded = JWT.decode(token, { complete: true });
+
+    if (decoded == null) {
+      // In this case something but not a valid JWT was provided to the
+      // Auth Header, so we'll dismiss the request
+      return res.status(401).send("Unauthorized");
+    }
+
+    // In case the Payload can be obtained so we'll move on to the Auth process
     var payload = decoded.payload;
 
     var searchQuery = {};
