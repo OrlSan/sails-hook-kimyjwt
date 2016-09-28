@@ -1,6 +1,6 @@
 {
   "name": "sails-hook-kimyjwt",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "JSON Web Tokens for Sails, made for humans.",
   "main": "index.js",
   "scripts": {
