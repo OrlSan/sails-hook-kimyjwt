@@ -23,6 +23,7 @@ module.exports.kimyjwt = {
   secretField: "secret",
   // Optional
   idField: "id", // This is an attribute in the model
+  passportLike: false // defaults to true
 }
 ```
 
@@ -36,6 +37,22 @@ authentication and you're done:
     controller: 'UserController',
     action: 'mySecureRoute'
   }]
+```
+
+If you enable the Passport.js-like API then you can use the `req.user` object
+as you usually do in a Passport.js-based application:
+
+```javascript
+// UserController
+
+module.exports = {
+	secureRoute: function(req, res) {
+		res.json({
+			success: true,
+			message: "Welcome, " + req.user.name // Name is a property in the model
+		});
+	}
+};
 ```
 
 # Contribute
