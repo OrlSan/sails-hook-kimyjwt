@@ -19,10 +19,32 @@ And then create the config on `config/kimyjwt.js`
 ```javascript
 module.exports.kimyjwt = {
   // Required
-  model: "user",
+  model: "user", //lower case
   secretField: "secret",
   // Optional
   idField: "id", // This is an attribute in the model
+  errorResponses: {
+    0 : {
+      name: 'missingToken',
+      message: 'Missing Token'
+    },
+    1 : {
+      name: 'failDecode',
+      message: 'Fail Decode'
+    },
+    2 : {
+      name: 'baseError',
+      message: 'Base Error'
+    },
+    3 : {
+      name: 'jWTFail',
+      message: 'JWT Fail'
+    },
+    4 : {
+      name: 'notMatching',
+      message: 'Not Matching User'
+    }
+  }
 }
 ```
 
