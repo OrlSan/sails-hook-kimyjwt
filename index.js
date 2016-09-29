@@ -7,7 +7,8 @@ module.exports = function indexes(sails) {
     defaults: {
       kimyjwt: {
         idField: "id",
-        passportLike: true
+        passportLike: true,
+        magicObject: false
       }
     },
 
@@ -26,11 +27,19 @@ module.exports = function indexes(sails) {
         var secretField  = sails.config.kimyjwt.secretField;
         var idField      = sails.config.kimyjwt.idField;
         var passportLike = sails.config.kimyjwt.passportLike;
+        var magicObject  = sails.config.kimyjwt.magicObject;
 
         var options = {
           secretField: secretField,
           idField: idField,
-          passportLike: passportLike
+          passportLike: passportLike,
+          magicObject: magicObject
+        };
+
+        // Warning for Magic object enabled if the passportLike API is disabled
+        if (!passportLike && magicObject) {
+          sails.log.warn("Kimy JWT: Magic Object will not work. "
+            + "Enable the \"passportLike\" option in the settings");
         }
 
         // Create the policy
@@ -84,7 +93,13 @@ function verify(model, options) {
 
           // When no error found the verification got success, so we can add
           // the Passport-like behavior if needed and proceed with next()
-          if (options.passportLike) req.user = foundUser.toJSON();
+          if (options.passportLike) {
+            if (options.magicObject) {
+              req.user = foundUser;
+            } else {
+              req.user = foundUser.toJSON();
+            }
+          }
 
           return next();
         });

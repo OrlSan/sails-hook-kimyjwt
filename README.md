@@ -39,6 +39,10 @@ authentication and you're done:
   }]
 ```
 
+## Options
+
+### Passport.js-like API
+
 If you enable the Passport.js-like API then you can use the `req.user` object
 as you usually do in a Passport.js-based application:
 
@@ -53,6 +57,42 @@ module.exports = {
 		});
 	}
 };
+```
+
+### Magic Object in `req.user`
+
+With the `passportLike` option enabled, the hook can attach the full model
+object to the `req.user` object. This adds the possibility to the following
+code to be used:
+
+```javascript
+// someController.js
+
+module.exports = {
+  myRoute: function(req, res) {
+    req.user.someMethodInTheModel();
+    // ...
+
+    res.json({
+      "success": true,
+      "message": "Well done, " + req.user.name + "!"
+    });
+  }
+};
+```
+
+For doing so just add the `magicObject` setting to true in the options
+
+```javascript
+module.exports.kimyjwt = {
+  // Required
+  model: "user",
+  secretField: "secret",
+  // Optional
+  idField: "id", // This is an attribute in the model
+  passportLike: true, // defaults to true
+  magicObject: true // defaults to false
+}
 ```
 
 # Contribute
