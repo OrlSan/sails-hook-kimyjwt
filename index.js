@@ -8,7 +8,9 @@ module.exports = function indexes(sails) {
       kimyjwt: {
         idField: "id",
         passportLike: true,
-        magicObject: false
+        magicObject: false,
+        useSailsResponses: false,
+        passPayloadInReq: false
       }
     },
 
@@ -28,12 +30,16 @@ module.exports = function indexes(sails) {
         var idField      = sails.config.kimyjwt.idField;
         var passportLike = sails.config.kimyjwt.passportLike;
         var magicObject  = sails.config.kimyjwt.magicObject;
+        var useSailsResponses = sails.config.kimyjwt.useSailsResponses;
+        var payloadInReq = sails.config.kimyjwt.passPayloadInReq;
 
         var options = {
           secretField: secretField,
           idField: idField,
           passportLike: passportLike,
-          magicObject: magicObject
+          magicObject: magicObject,
+          useSailsResponses: useSailsResponses,
+          payloadInReq: payloadInReq
         };
 
         // Warning for Magic object enabled if the passportLike API is disabled
@@ -62,6 +68,10 @@ function verify(model, options) {
     var token = ext_token(req);
 
     if (token == null) {
+      if (options.useSailsResponses) {
+        return res.unauthorized();
+      }
+      
       return res.status(401).send("Unauthorized");
     }
 
@@ -70,6 +80,10 @@ function verify(model, options) {
     if (decoded == null) {
       // In this case something but not a valid JWT was provided to the
       // Auth Header, so we'll dismiss the request
+      if (options.useSailsResponses) {
+        return res.unauthorized();
+      }
+
       return res.status(401).send("Unauthorized");
     }
 
@@ -81,6 +95,10 @@ function verify(model, options) {
 
     model.findOne(searchQuery).exec(function(errFind, foundUser) {
       if (errFind) {
+        if (options.useSailsResponses) {
+          return res.serverError();
+        }
+
         return res.status(500).send("Internal server error");
       }
 
@@ -88,6 +106,10 @@ function verify(model, options) {
         // Verify whether the JWT signature is valid or not
         JWT.verify(token, foundUser.secret, function(errToken, decoded) {
           if (errToken) {
+            if (options.useSailsResponses) {
+              return res.unauthorized();
+            }
+
             return res.status(401).send("Unauthorized");
           }
 
@@ -101,10 +123,18 @@ function verify(model, options) {
             }
           }
 
+          if (options.payloadInReq) {
+            req.payload = payload;
+          }
+
           return next();
         });
       } else {
         // There's no matching user on the database, so you're unauthorized
+        if (options.useSailsResponses) {
+          return res.unauthorized();
+        }
+
         return res.status(401).send("Unauthorized");
       }
     });
