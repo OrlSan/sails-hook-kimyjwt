@@ -3,6 +3,9 @@
 [![NPM Version][npm-image]][npm-url]
 [![NPM Downloads][downloads-image]][downloads-url]
 
+[![NPM](https://nodei.co/npm-dl/sails-hook-kimyjwt.png?months=6&height=1)](https://nodei.co/npm/sails-hook-kimyjwt/)
+
+
 [Sails.js](http://sailsjs.org) hook for JWT-based authentication, for humans.
 
 If you're looking for using [JSON Web Tokens](https://jwt.io/) on your Sails
@@ -23,8 +26,28 @@ module.exports.kimyjwt = {
   secretField: "secret",
   // Optional
   idField: "id", // This is an attribute in the model
-  passportLike: false // defaults to true
+  passportLike: false, // defaults to true
+  unauthMessage: "Unauthorized message", //defautls: Unauthorized
+  serverErrorMessage: "Server error message" //defaults: Server error
 }
+```
+
+Create the unauthorized response on `api/responses/unauthorized.js`:
+```javascript
+module.exports = function unauthorized(detailedInfo) {
+
+  var req = this.req;
+  var res = this.res;
+
+  res.status(401);
+  return res.json({
+    error: {
+      code: "401",
+      message : "Unauthorized",
+      detailedInfo: detailedInfo
+    }
+  });
+};
 ```
 
 Next, you should only add the `kimyjwt` policy to the routes you require the
@@ -91,7 +114,9 @@ module.exports.kimyjwt = {
   // Optional
   idField: "id", // This is an attribute in the model
   passportLike: true, // defaults to true
-  magicObject: true // defaults to false
+  magicObject: true, // defaults to false
+  unauthMessage: "Unauthorized message", //defautls: Unauthorized
+  serverErrorMessage: "Server error message" //defaults: Server error
 }
 ```
 
@@ -101,7 +126,7 @@ All PR and Issues are welcome. You can get in touch with
 
 # About
 
-(C) 2016, Orlando Sánchez & Jorge Santiago Álvarez, Grupo Jaque.
+(C) 2016, [Orlando Sánchez](https://www.npmjs.com/~orlsan) & [Jorge Santiago Alvarez](https://www.npmjs.com/~sanjorgek), Grupo Jaque.
 
 
 [npm-image]: https://img.shields.io/npm/v/sails-hook-kimyjwt.svg

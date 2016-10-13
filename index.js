@@ -8,7 +8,9 @@ module.exports = function indexes(sails) {
       kimyjwt: {
         idField: "id",
         passportLike: true,
-        magicObject: false
+        magicObject: false,
+        unauthMessage: "Unauthorized",
+        serverErrorMessage: "Server error"
       }
     },
 
@@ -28,12 +30,16 @@ module.exports = function indexes(sails) {
         var idField      = sails.config.kimyjwt.idField;
         var passportLike = sails.config.kimyjwt.passportLike;
         var magicObject  = sails.config.kimyjwt.magicObject;
+        var unauthMessage  = sails.config.kimyjwt.unauthMessage;
+        var serverErrorMessage  = sails.config.kimyjwt.serverErrorMessage;
 
         var options = {
           secretField: secretField,
           idField: idField,
           passportLike: passportLike,
-          magicObject: magicObject
+          magicObject: magicObject,
+          unauthMessage: unauthMessage,
+          serverErrorMessage: serverErrorMessage
         };
 
         // Warning for Magic object enabled if the passportLike API is disabled
@@ -62,7 +68,7 @@ function verify(model, options) {
     var token = ext_token(req);
 
     if (token == null) {
-      return res.status(401).send("Unauthorized");
+      return res.unauthorized(options.unauthMessage);
     }
 
     var decoded = JWT.decode(token, { complete: true });
@@ -70,7 +76,7 @@ function verify(model, options) {
     if (decoded == null) {
       // In this case something but not a valid JWT was provided to the
       // Auth Header, so we'll dismiss the request
-      return res.status(401).send("Unauthorized");
+      return res.unauthorized(options.unauthMessage);
     }
 
     // In case the Payload can be obtained so we'll move on to the Auth process
@@ -81,14 +87,14 @@ function verify(model, options) {
 
     model.findOne(searchQuery).exec(function(errFind, foundUser) {
       if (errFind) {
-        return res.status(500).send("Internal server error");
+        return res.serverError(options.serverErrorMessage);
       }
 
       if (foundUser) {
         // Verify whether the JWT signature is valid or not
         JWT.verify(token, foundUser.secret, function(errToken, decoded) {
           if (errToken) {
-            return res.status(401).send("Unauthorized");
+            return res.unauthorized(options.unauthMessage);
           }
 
           // When no error found the verification got success, so we can add
@@ -105,7 +111,7 @@ function verify(model, options) {
         });
       } else {
         // There's no matching user on the database, so you're unauthorized
-        return res.status(401).send("Unauthorized");
+        return res.unauthorized(options.unauthMessage);
       }
     });
   };
