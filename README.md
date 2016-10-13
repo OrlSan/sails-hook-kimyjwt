@@ -95,6 +95,75 @@ module.exports.kimyjwt = {
 }
 ```
 
+### Payload to the `req` object
+
+If you'd like to get the data contained in the JWT Payload in your controllers,
+then you should only enable the option `passPayloadInReq` (which defaults to
+  `false`) in the config file for the module.
+
+```javascript
+module.exports.kimyjwt = {
+  // Required
+  model: "user",
+  secretField: "secret",
+  // Optional
+  idField: "id",
+  passportLike: true,
+  passPayloadInReq: true
+}
+```
+
+So the following code can be used:
+
+```javascript
+// someController.js
+
+module.exports = {
+  myRoute: function(req, res) {
+    var issuedAt = req.payload.iat;
+
+    console.log("This token was issued at: " + new Date(issuedAt));
+
+    res.json({
+      message: "I think we're all good right now"
+    });
+  }
+};
+```
+
+### Use the Sails.js defined responses instead
+
+If you create a `unauthorized` response in the `api/responses` folder you can
+use it instead of the traditional more Express.js-styled response included
+by default in the module. So, if your response is defined this way:
+
+```javascript
+// unauthorized.js
+module.exports = function unauthorized (data, options) {
+  var req = this.req;
+
+  return res.status(401).json({
+    authorized: false,
+    message: "You shall not pass"
+  });
+};
+```
+
+You can enable this response for being the default one to be sent in the configs
+
+```javascript
+module.exports.kimyjwt = {
+  // Required
+  model: "user",
+  secretField: "secret",
+  // Optional
+  idField: "id",
+  passportLike: true,
+  useSailsResponses: true
+}
+```
+
+
 # Contribute
 All PR and Issues are welcome. You can get in touch with
 [@SoyOrlSan](http://twitter.com/SoyOrlSanM) too.
